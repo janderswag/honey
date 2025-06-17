@@ -12,7 +12,6 @@ import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import PQueue from "p-queue";
 
 const BATCH_SIZE = 5;
 const PARALLEL_BATCHES = 3;
@@ -75,6 +74,53 @@ async function acquireProcessingLock(
   }
 }
 
+// Simple delay function to replace problematic timer usage
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => {
+    const start = Date.now();
+    const check = () => {
+      if (Date.now() - start >= ms) {
+        resolve();
+      } else {
+        setImmediate(check);
+      }
+    };
+    check();
+  });
+}
+
+// Simple semaphore implementation to replace PQueue
+class SimpleSemaphore {
+  private permits: number;
+  private waiting: (() => void)[] = [];
+
+  constructor(permits: number) {
+    this.permits = permits;
+  }
+
+  async acquire(): Promise<void> {
+    return new Promise((resolve) => {
+      if (this.permits > 0) {
+        this.permits--;
+        resolve();
+      } else {
+        this.waiting.push(resolve);
+      }
+    });
+  }
+
+  release(): void {
+    this.permits++;
+    if (this.waiting.length > 0) {
+      const next = this.waiting.shift();
+      if (next) {
+        this.permits--;
+        next();
+      }
+    }
+  }
+}
+
 export async function processUserMentions(userId: string, topicId?: string) {
   console.log(
     `Starting mention analysis for user: ${userId}, topic: ${topicId || "all"}`
@@ -134,95 +180,97 @@ export async function processUserMentions(userId: string, topicId?: string) {
         return { success: true, processed: 0, mentionsFound: 0 };
       }
 
-      const queue = new PQueue({
-        concurrency: PARALLEL_BATCHES,
-        interval: 1000,
-        intervalCap: 10,
-      });
-
+      const semaphore = new SimpleSemaphore(PARALLEL_BATCHES);
       let totalProcessed = 0;
       let totalMentions = 0;
       const errors: string[] = [];
 
-      queue.on("completed", () => {
-        console.log(
-          `Progress: ${totalProcessed}/${totalResults} results processed`
-        );
-      });
+      const processBatch = async (offset: number) => {
+        await semaphore.acquire();
+        
+        try {
+          const results = await tx.query.modelResults.findMany({
+            where: and(
+              inArray(modelResults.promptId, promptIds),
+              eq(modelResults.status, "completed")
+            ),
+            with: {
+              prompt: { with: { topic: true } },
+            },
+            limit: BATCH_SIZE,
+            offset: offset,
+          });
 
-      const batchJobs = [];
-      for (let offset = 0; offset < totalResults; offset += BATCH_SIZE) {
-        batchJobs.push(
-          queue.add(async () => {
+          const batchMentions: MentionInsert[] = [];
+
+          for (const result of results) {
+            if (!result.results || !result.prompt) continue;
+
             try {
-              const results = await tx.query.modelResults.findMany({
-                where: and(
-                  inArray(modelResults.promptId, promptIds),
-                  eq(modelResults.status, "completed")
-                ),
-                with: {
-                  prompt: { with: { topic: true } },
-                },
-                limit: BATCH_SIZE,
-                offset: offset,
-              });
+              const detectedMentions = await detectMentionsInResponse(
+                JSON.stringify(result.results),
+                result.prompt.topic.name,
+                result.prompt.topic.description ?? ""
+              );
 
-              const batchMentions: MentionInsert[] = [];
+              const mappedMentions = detectedMentions.map((mention) => ({
+                promptId: result.promptId,
+                topicId: result.prompt.topicId,
+                modelResultId: result.id,
+                model: result.model,
+                mentionType: mention.mentionType,
+                position: mention.position.toString(),
+                context: mention.context,
+                sentiment: mention.sentiment,
+                confidence: mention.confidence.toFixed(2),
+                extractedText: mention.extractedText,
+                competitorName: mention.competitorName,
+              }));
 
-              for (const result of results) {
-                if (!result.results || !result.prompt) continue;
-
-                try {
-                  const detectedMentions = await detectMentionsInResponse(
-                    JSON.stringify(result.results),
-                    result.prompt.topic.name,
-                    result.prompt.topic.description ?? ""
-                  );
-
-                  const mappedMentions = detectedMentions.map((mention) => ({
-                    promptId: result.promptId,
-                    topicId: result.prompt.topicId,
-                    modelResultId: result.id,
-                    model: result.model,
-                    mentionType: mention.mentionType,
-                    position: mention.position.toString(),
-                    context: mention.context,
-                    sentiment: mention.sentiment,
-                    confidence: mention.confidence.toFixed(2),
-                    extractedText: mention.extractedText,
-                    competitorName: mention.competitorName,
-                  }));
-
-                  batchMentions.push(...mappedMentions);
-                } catch (error) {
-                  console.error(`Error processing result ${result.id}:`, error);
-                }
-              }
-
-              await tx
-                .delete(mentions)
-                .where(inArray(mentions.promptId, promptIds));
-
-              const INSERT_CHUNK_SIZE = 100;
-              for (
-                let i = 0;
-                i < batchMentions.length;
-                i += INSERT_CHUNK_SIZE
-              ) {
-                const chunk = batchMentions.slice(i, i + INSERT_CHUNK_SIZE);
-                await tx.insert(mentions).values(chunk);
-                totalMentions += chunk.length;
-              }
-
-              totalProcessed += results.length;
+              batchMentions.push(...mappedMentions);
             } catch (error) {
-              errors.push(`Batch error at offset ${offset}: ${error}`);
+              console.error(`Error processing result ${result.id}:`, error);
             }
-          })
-        );
+          }
+
+          await tx
+            .delete(mentions)
+            .where(inArray(mentions.promptId, promptIds));
+
+          const INSERT_CHUNK_SIZE = 100;
+          for (
+            let i = 0;
+            i < batchMentions.length;
+            i += INSERT_CHUNK_SIZE
+          ) {
+            const chunk = batchMentions.slice(i, i + INSERT_CHUNK_SIZE);
+            await tx.insert(mentions).values(chunk);
+            totalMentions += chunk.length;
+          }
+
+          totalProcessed += results.length;
+          console.log(
+            `Progress: ${totalProcessed}/${totalResults} results processed`
+          );
+        } catch (error) {
+          errors.push(`Batch error at offset ${offset}: ${error}`);
+        } finally {
+          semaphore.release();
+        }
+      };
+
+      // Process batches with controlled concurrency
+      const batchPromises: Promise<void>[] = [];
+      for (let offset = 0; offset < totalResults; offset += BATCH_SIZE) {
+        batchPromises.push(processBatch(offset));
+        
+        // Add small delay between batch starts to prevent overwhelming
+        if (batchPromises.length % PARALLEL_BATCHES === 0) {
+          await sleep(100);
+        }
       }
 
-      await Promise.all(batchJobs);
+      await Promise.all(batchPromises);
 
       await tx
         .update(prompts)
@@ -334,7 +382,7 @@ async function detectMentionsInResponse(
         }/${MAX_RETRIES}) after ${delay}ms`
       );
 
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      await sleep(delay);
 
       return detectMentionsInResponse(
         response,

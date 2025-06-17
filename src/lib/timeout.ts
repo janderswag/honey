@@ -1,18 +1,36 @@
+// Simple timeout utilities that avoid problematic timer interactions
+
 export function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
   errorMessage = `Operation timed out after ${timeoutMs}ms`
 ): Promise<T> {
+  let timeoutId: NodeJS.Timeout;
+  
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(errorMessage));
+    }, timeoutMs);
+  });
+
   return Promise.race([
-    promise,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(errorMessage)), timeoutMs)
-    ),
+    promise.finally(() => clearTimeout(timeoutId)),
+    timeoutPromise
   ]);
 }
 
 export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => {
+    const start = Date.now();
+    const check = () => {
+      if (Date.now() - start >= ms) {
+        resolve();
+      } else {
+        setImmediate(check);
+      }
+    };
+    check();
+  });
 }
 
 export async function withRetry<T>(

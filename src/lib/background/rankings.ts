@@ -6,12 +6,80 @@
  */
 
 import { db } from "@/db";
-import { withTimeout } from "../timeout";
 import { Status } from "@/types/prompt";
 import { LLMResult } from "@/types/prompt";
 import { getVisibilityScore } from "../utils";
 import { prompts } from "@/db/schema";
 import { eq } from "drizzle-orm";
+
+// Simple timeout implementation without problematic timer usage
+async function withSimpleTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  errorMessage = `Operation timed out after ${timeoutMs}ms`
+): Promise<T> {
+  let timeoutId: NodeJS.Timeout;
+  
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(errorMessage));
+    }, timeoutMs);
+  });
+
+  try {
+    const result = await Promise.race([promise, timeoutPromise]);
+    clearTimeout(timeoutId);
+    return result;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
+// Simple delay function
+async function simpleDelay(ms: number): Promise<void> {
+  return new Promise(resolve => {
+    const start = Date.now();
+    const check = () => {
+      if (Date.now() - start >= ms) {
+        resolve();
+      } else {
+        setImmediate(check);
+      }
+    };
+    check();
+  });
+}
+
+// Simple retry implementation without complex timer handling
+async function withSimpleRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3,
+  baseDelayMs = 1000
+): Promise<T> {
+  let lastError: Error;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+
+      if (attempt === maxRetries) {
+        throw lastError;
+      }
+
+      const delayMs = baseDelayMs * Math.pow(2, attempt);
+      console.warn(
+        `Attempt ${attempt + 1} failed, retrying in ${delayMs}ms:`,
+        lastError.message
+      );
+      await simpleDelay(delayMs);
+    }
+  }
+
+  throw lastError!;
+}
 
 export async function processInBackground(
   promptId: string,
@@ -25,7 +93,7 @@ export async function processInBackground(
     const [{ processPromptWithAllProviders }, { modelResults }] =
       await Promise.all([import("@/lib/llm"), import("@/db/schema")]);
 
-    const results = await withTimeout(
+    const results = await withSimpleTimeout(
       processPromptWithAllProviders(content, geoRegion),
       180000,
       `Processing timeout for prompt ${promptId}`
