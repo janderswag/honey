@@ -4,7 +4,7 @@ import { processUserMentions } from "@/lib/background/mentions";
 import { waitUntil } from "@vercel/functions";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
