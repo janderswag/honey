@@ -41,7 +41,7 @@ export function StripeResult({
       <div className="text-center space-y-4 flex flex-col items-center">
         <Image
           src="/logo-sq.png"
-          alt="Lookout"
+          alt="Hawkify"
           width={50}
           height={50}
           className="rounded-lg"

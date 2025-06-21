@@ -39,19 +39,19 @@ export function LoginForm({
       <Card className="rounded-lg">
         <CardHeader className="text-center flex flex-col items-center">
           <a
-            href="https://lookout.so"
+            href="https://app.hawkify.ai"
             rel="noopener noreferrer"
             className="flex items-center gap-2 self-center font-medium mb-2"
           >
             <Image
               src="/logo-sq.png"
-              alt="Lookout"
+              alt="Hawkify"
               width={100}
               height={100}
               className="rounded-lg size-15"
             />
           </a>
-          <CardTitle className="text-xl">Welcome to Lookout!</CardTitle>
+          <CardTitle className="text-xl">Welcome to Hawkify!</CardTitle>
           <CardDescription>Login with your Google account</CardDescription>
         </CardHeader>
         <CardContent>

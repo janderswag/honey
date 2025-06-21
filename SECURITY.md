@@ -3,18 +3,18 @@
 This document outlines security procedures and general policies for the `standard`
 project.
 
-  * [Reporting a Bug](#reporting-a-bug)
-  * [Disclosure Policy](#disclosure-policy)
-  * [Comments on this Policy](#comments-on-this-policy)
+- [Reporting a Bug](#reporting-a-bug)
+- [Disclosure Policy](#disclosure-policy)
+- [Comments on this Policy](#comments-on-this-policy)
 
 ## Reporting a Bug
 
-The `10XU` team and community take all security bugs in `Lookout` seriously.
-Thank you for improving the security of `Lookout`. We appreciate your efforts and
+The `10XU` team and community take all security bugs in `Hawkify` seriously.
+Thank you for improving the security of `Hawkify`. We appreciate your efforts and
 responsible disclosure and will make every effort to acknowledge your
 contributions.
 
-Report security bugs by emailing the lead maintainer at lookout [ at ] useenzo [ dot ] com
+Report security bugs by emailing the lead maintainer at Hawkify [ at ] useenzo [ dot ] com
 
 The lead maintainer will acknowledge your email within 48 hours, and will send a
 more detailed response within 48 hours indicating the next steps in handling
@@ -31,10 +31,10 @@ When the security team receives a security bug report, they will assign it to a
 primary handler. This person will coordinate the fix and release process,
 involving the following steps:
 
-  * Confirm the problem and determine the affected versions.
-  * Audit code to find any potential similar problems.
-  * Prepare fixes for all releases still under maintenance. These fixes will be
-    released as fast as possible to npm.
+- Confirm the problem and determine the affected versions.
+- Audit code to find any potential similar problems.
+- Prepare fixes for all releases still under maintenance. These fixes will be
+  released as fast as possible to npm.
 
 ## Comments on this Policy
 

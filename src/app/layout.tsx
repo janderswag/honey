@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "LookOut - LLM monitoring",
-  description: "LookOut is a tool that monitors your brand presense on LLMs",
+  title: "Hawkify - LLM monitoring",
+  description: "Hawkify is a tool that monitors your brand presense on LLMs",
 };
 
 export default function RootLayout({

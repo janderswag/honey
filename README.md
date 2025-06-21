@@ -1,33 +1,34 @@
 <div align="center">
-  <img src="public/logo-move.gif" alt="LookOut Logo" width="120" height="120" style="border-radius:5%">
-  
-  # Jake
-  
-  **Monitor your brand's visibility across ChatGPT, Claude, Gemini and emerging AI search engines**
-  
-  [![GitHub stars](https://img.shields.io/github/stars/10xuio/lookout?style=flat-square)](https://github.com/10xuio/lookout)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square)](https://www.typescriptlang.org/)
-  [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square)](https://nextjs.org/)
-  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+  <img src="public/logo-move.gif" alt="Hawkify Logo" width="120" height="120" style="border-radius:5%">
+
+# Jake
+
+**Monitor your brand's visibility across ChatGPT, Claude, Gemini and emerging AI search engines**
+
+[![GitHub stars](https://img.shields.io/github/stars/10xuio/Hawkify?style=flat-square)](https://github.com/10xuio/Hawkify)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square)](https://nextjs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 </div>
 
 <br />
 
 <div align="center">
-  <img src="public/dashboard.png" alt="LookOut Dashboard">
-  <img src="public/ranking.png" alt="LookOut Ranking">
-  <img src="public/mentions.png" alt="LookOut Ranking">
+  <img src="public/dashboard.png" alt="Hawkify Dashboard">
+  <img src="public/ranking.png" alt="Hawkify Ranking">
+  <img src="public/mentions.png" alt="Hawkify Ranking">
 </div>
 
 ## Overview
 
-LookOut is the first open-source platform designed to track and optimize your brand's ranking in AI-powered search results. As LLMs become the primary gateway for information discovery, your visibility in AI responses directly impacts your business growth.
+Hawkify is the first open-source platform designed to track and optimize your brand's ranking in AI-powered search results. As LLMs become the primary gateway for information discovery, your visibility in AI responses directly impacts your business growth.
 
 **Get Started Now**
 One click deply to your vercel account.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/10xuio/lookout)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/10xuio/Hawkify)
 
 ### Key Benefits
 
@@ -38,12 +39,12 @@ One click deply to your vercel account.
 
 ## Quick Start
 
-Get LookOut running in under 5 minutes:
+Get Hawkify running in under 5 minutes:
 
 ```bash
 # Clone and install
-git clone https://github.com/10xuio/lookout.git
-cd lookout
+git clone https://github.com/10xuio/Hawkify.git
+cd Hawkify
 bun install
 
 # Configure environment
@@ -83,7 +84,7 @@ Visit `http://localhost:3000` to start tracking your AI search rankings.
 
 ## Architecture
 
-LookOut uses a modern, scalable architecture optimized for performance:
+Hawkify uses a modern, scalable architecture optimized for performance:
 
 ```mermaid
 graph LR
@@ -140,7 +141,7 @@ We welcome contributions! See our Contributing Guide for details.
 
 ```bash
 # Fork and clone the repo
-git clone https://github.com/10xuio/lookout.git
+git clone https://github.com/10xuio/Hawkify.git
 
 # Create a feature branch
 git checkout -b feature/amazing-feature
@@ -184,9 +185,9 @@ bun run lint
 - Track campaign effectiveness
 - Ensure accurate information propagation
 
-## Why Choose LookOut?
+## Why Choose Hawkify?
 
-| Feature                  | LookOut | Competitors |
+| Feature                  | Hawkify | Competitors |
 | ------------------------ | ------- | ----------- |
 | **Open Source**          | ✅      | ❌          |
 | **Multi-LLM Support**    | ✅      | Limited     |
@@ -211,6 +212,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 **⭐ Star this repo if you find it useful! ⭐**
 
-Made with ❤️ by the LookOut team
+Made with ❤️ by the Hawkify team
 
 </div>

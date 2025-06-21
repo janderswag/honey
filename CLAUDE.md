@@ -23,9 +23,10 @@ bun run start          # Start production server
 
 ## Architecture Overview
 
-**LookOut** is an AI brand monitoring platform built with Next.js 15 App Router, using multiple LLM providers (OpenAI, Claude, Google) to analyze brand mentions across the web.
+**Hawkify** is an AI brand monitoring platform built with Next.js 15 App Router, using multiple LLM providers (OpenAI, Claude, Google) to analyze brand mentions across the web.
 
 ### Tech Stack
+
 - **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS, Radix UI
 - **Database**: PostgreSQL with Drizzle ORM
 - **Authentication**: Better Auth with Google OAuth
@@ -37,6 +38,7 @@ bun run start          # Start production server
 ### Core Data Model
 
 The application revolves around a hierarchical structure:
+
 - **Users** have subscription plans limiting usage
 - **Topics** represent brands/companies being monitored
 - **Prompts** are search queries with geographic targeting
@@ -44,6 +46,7 @@ The application revolves around a hierarchical structure:
 - **Mentions** contain extracted brand references with sentiment
 
 Key database features:
+
 - Enum types for plans, models, regions, sentiment
 - JSONB fields for flexible metadata storage
 - Unique constraints ensuring one result per prompt/model
@@ -53,6 +56,7 @@ Key database features:
 **Multi-Provider Strategy**: Each prompt is processed simultaneously across OpenAI, Claude, and Google providers using their respective search capabilities.
 
 **Processing Flow**:
+
 1. User submits prompt → Background job queued via `waitUntil`
 2. Concurrent API calls to all three providers (180s timeout)
 3. Structured JSON extraction with sources and citations
@@ -83,6 +87,7 @@ src/app/
 ### Subscription & Usage Management
 
 Plans (Free, Basic, Pro, Enterprise) limit:
+
 - Daily prompts allowed
 - Available LLM providers
 - Number of topics
@@ -105,6 +110,7 @@ Better Auth with Google OAuth, using Drizzle adapter. User sessions include IP/U
 ### Vercel Configuration
 
 Function timeouts are configured for LLM processing:
+
 - `/api/prompts/process`: 300s, 1024MB memory
 - `/api/prompts/[promptId]/status`: 10s, 256MB memory
 

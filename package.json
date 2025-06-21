@@ -3,13 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "d": "doppler run --",
     "dev": "bun run d next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "bun run d drizzle-kit migrate",
+    "db:migrate": "bun run drizzle-kit migrate",
     "db:studio": "bun run d drizzle-kit studio",
     "prepare": "husky"
   },
