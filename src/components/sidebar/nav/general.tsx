@@ -1,6 +1,6 @@
-import { BugIcon, HelpCircleIcon } from "lucide-react";
+// import { BugIcon, HelpCircleIcon } from "lucide-react";
 
-import { GithubIcon, TwitterIcon } from "@/components/ui/icons";
+// import { GithubIcon, TwitterIcon } from "@/components/ui/icons";
 
 import {
   SidebarGroup,
@@ -10,27 +10,28 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const generalNavItems = [
-  {
-    name: "Report Issue",
-    url: "https://github.com/10xuio/lookout/issues",
-    icon: BugIcon,
-  },
-  {
-    name: "Call Founder",
-    url: "https://cal.com/chaitanyya/lookout",
-    icon: HelpCircleIcon,
-  },
-  {
-    name: "10xuio/lookout",
-    url: "https://github.com/10xuio/lookout",
-    icon: GithubIcon,
-  },
-  {
-    name: "lookout_so",
-    url: "https://x.com/lookout_so",
-    icon: TwitterIcon,
-  },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const generalNavItems: any[] = [
+  // {
+  //   name: "Report Issue",
+  //   url: "https://github.com/10xuio/Hawkify/issues",
+  //   icon: BugIcon,
+  // },
+  // {
+  //   name: "Call Founder",
+  //   url: "https://cal.com/chaitanyya/Hawkify",
+  //   icon: HelpCircleIcon,
+  // },
+  // {
+  //   name: "10xuio/Hawkify",
+  //   url: "https://github.com/10xuio/Hawkify",
+  //   icon: GithubIcon,
+  // },
+  // {
+  //   name: "Hawkify_so",
+  //   url: "https://x.com/Hawkify_so",
+  //   icon: TwitterIcon,
+  // },
 ];
 
 export function NavGeneral() {

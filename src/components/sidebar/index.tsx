@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { NavMain } from "./nav/main";
-import { NavGeneral } from "./nav/general";
+// import { NavGeneral } from "./nav/general";
 import { NavUser } from "./nav/user";
 import { BrandComp } from "./nav/brand";
 import {
@@ -20,7 +20,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        <NavGeneral />
+        {/* <NavGeneral /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

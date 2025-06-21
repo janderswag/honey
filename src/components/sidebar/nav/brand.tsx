@@ -20,14 +20,14 @@ export async function BrandComp() {
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg mr-1">
             <Image
               src="/logo-sq.png"
-              alt="Lookout"
+              alt="Hawkify"
               className="size-8 object-contain rounded-lg"
               width={50}
               height={50}
             />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">Lookout</span>
+            <span className="truncate font-semibold">Hawkify</span>
             <span className="truncate text-xs capitalize">
               {user?.plan ?? planName} Plan
             </span>
