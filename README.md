@@ -1,7 +1,7 @@
 <div align="center">
   <img src="public/logo-move.gif" alt="Hawkify Logo" width="120" height="120" style="border-radius:5%">
 
-# Hawkify
+# Hawkify1
 
 **Monitor your brand's visibility across ChatGPT, Claude, Gemini and emerging AI search engines**
 
