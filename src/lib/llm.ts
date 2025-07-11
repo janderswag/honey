@@ -169,6 +169,9 @@ export async function processPromptWithOpenAI(
   }
 }
 
+/**
+ * Process prompt with Google
+ */
 export async function processPromptWithGoogle(
   prompt: string,
   region: string
