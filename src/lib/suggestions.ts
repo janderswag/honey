@@ -46,9 +46,9 @@ export async function generatePromptSuggestions(
   - Return an object that follows this schema:
       { "suggestions": [ { "id": "prompt_1", "content": "...", "description": "..." }, ... ] }
   - Each query must:
-      • Contain 2-6 natural-language words.  
-      • Show commercial or investigational intent (“best”, “top”, “vs”, “affordable”, etc.).  
-      • Avoid any direct mention or variation of "${topicName}".  
+      • Contain 2-6 natural-language words.
+      • Show commercial or investigational intent (“best”, “top”, “vs”, “affordable”, etc.).
+      • Avoid any direct mention or variation of "${topicName}".
       • Vary angles (features, comparisons, use-cases, locations).
   - Keep each description to 20-40 words explaining the competitive insight.
 </INSTRUCTIONS>
@@ -82,7 +82,7 @@ export async function generateTopicSuggestions(
 ): Promise<TopicSuggestion[]> {
   try {
     const prompt = `<ROLE>
-      You are a market analyst selecting brands for competitive SEO analysis in the \"Lookout\" tool.
+      You are a market analyst selecting brands for competitive SEO analysis in the \"Hawkify\" tool.
     </ROLE>
 
     <TASK>
@@ -95,14 +95,14 @@ export async function generateTopicSuggestions(
       - Return an object shaped like:
           { "suggestions": [ { "id": "topic_1", "name": "...", "description": "...", "category": "..." }, ... ] }
       - For each suggestion follow:
-          • id format "topic_#" counting from 1.  
-          • name: well-known searchable brand (no duplicates).  
-          • description: 30-50 words on why the brand is interesting to analyze competitively.  
-          • category: succinct primary industry/sector.  
+          • id format "topic_#" counting from 1.
+          • name: well-known searchable brand (no duplicates).
+          • description: 30-50 words on why the brand is interesting to analyze competitively.
+          • category: succinct primary industry/sector.
       - Selection criteria:
-          • Mix B2B & B2C across multiple industries.  
-          • Include market leaders & emerging disruptors with varied company sizes and business models.  
-          • Prioritize brands with strong digital/search presence and active competition in crowded markets.  
+          • Mix B2B & B2C across multiple industries.
+          • Include market leaders & emerging disruptors with varied company sizes and business models.
+          • Prioritize brands with strong digital/search presence and active competition in crowded markets.
     </INSTRUCTIONS>
 
     <EXAMPLES>
